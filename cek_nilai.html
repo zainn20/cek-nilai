@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengecekan Hasil Ujian</title>
+    <link rel="stylesheet" href="cek_nilai.css">
+</head>
+<body>
+    <div class="container">
+    <h1>Pengecekan Hasil Ujian</h1>
+    <label for="nilai">Masukkan nilai ujian (pisahkan dengan koma):</label><br>
+    <input type="text" id="nilai" placeholder="Contoh: 80, 75, 90"><br><br>
+    <button onclick="cekHasil()">Cek Hasil</button>
+    
+    
+    <div id="hasil"></div>
+    <p id="grade"></p>
+</div>
+    <script>
+        function cekHasil() {
+            const inputNilai = document.getElementById('nilai').value;
+            const nilaiArray = inputNilai.split(',').map(item => item.trim());
+            let total = 0;
+            let jumlah = 0;
+            let output = '';
+            // let output2 = '';
+
+            // Perulangan untuk memeriksa setiap nilai
+            for (let i = 0; i < nilaiArray.length; i++) {
+                const nilai = parseFloat(nilaiArray[i]); // Mengonversi string ke number
+
+                // Memeriksa tipe data
+                if (typeof nilai !== 'number' || isNaN(nilai)) {
+                    output += `Nilai "${nilaiArray[i]}" bukan angka yang valid.<br>`;
+                    continue; // Lewati nilai yang tidak valid
+                } 
+
+                // Menjumlahkan nilai dan menghitung jumlah
+                total += nilai;
+                jumlah++;
+            }
+
+            // Menghitung rata-rata
+            const rataRata = jumlah > 0 ? (total / jumlah) : 0;
+
+            // const rata-rata nilai hasil ujian
+            let grade;
+
+            if (rataRata >= 90) {
+                grade = 'A';
+            } else if (rataRata < 89 && rataRata >= 80) {
+                grade = 'B';
+            } else if (rataRata < 79 && rataRata >= 50) {
+                grade = 'C';
+            } else if (rataRata < 49 && rataRata >= 20)  {
+                grade = 'D';
+            } else  {
+                grade = 'E';
+            }
+
+            // Menyusun output hasil
+            output += `Total Nilai: ${total}<br>`;
+            output += `Jumlah mata pelajaran: ${jumlah}<br>`;
+            output += `Rata-rata Nilai: ${rataRata.toFixed(2)}`;
+
+            // Menampilkan hasil di inner HTML
+            document.getElementById('hasil').innerHTML = output;
+            document.getElementById('grade').innerText = `grade: ${grade}`;
+        }
+    </script>
+</body>
+</html>

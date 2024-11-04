@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Menghindari scrollbar */
+    display: flex;
+    justify-content: center; /* Memusatkan secara horizontal */
+    align-items: center; /* Memusatkan secara vertikal */
+    height: 100vh; /* Mengisi seluruh tinggi viewport */
+    
+}
+
+.video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1; /* Di belakang konten */
+    transform: translate(-50%, -50%)
+}
+
+.container {
+    justify-content: center;
+    border: 4px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 10px 10px 10px white;
+    width: 350px;
+    padding: 20px;
+    margin: auto;
+    text-align: center;
+    /* max-width: 400px; */
+    /* background-image: url(bg.jpeg);
+    background-size: cover; */
+}
+
+.container h2{
+    color: aliceblue;
+}
+
+.container label{
+    color: aliceblue;
+}
+
+.container p{
+    color: aliceblue;
+}
+
+.button {
+    background-color: blue;
+ 
+}
+
+.button:hover{
+    background-color: wheat;
+}

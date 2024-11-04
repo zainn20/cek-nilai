@@ -1,0 +1,17 @@
+
+
+body { 
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: aqua;
+ }
+
+.container{
+    justify-content: center;
+    margin: auto;
+    padding: 20px;
+    max-width: 600px;
+}
+
+#hasil { margin-top: 20px; }
