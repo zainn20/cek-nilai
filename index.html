@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Data Karyawan Divisi IT</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Data Karyawan</h2>
+
+        <!-- Input untuk mencari karyawan berdasarkan divisi -->
+        <input type="text" id="searchDivisi" placeholder="Cari berdasarkan divisi" oninput="filterByDivisi()">
+        
+        <!-- Tabel untuk menampilkan daftar karyawan -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Usia</th>
+                    <th>Divisi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="karyawanTable">
+                <!-- Data karyawan akan ditambahkan di sini menggunakan JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Form untuk menambah atau mengedit karyawan -->
+        <form id="karyawanForm">
+            <h3 id="formTitle">Tambah Karyawan</h3>
+            <input type="text" id="nama" placeholder="Nama" required>
+            <input type="number" id="usia" placeholder="Usia" required>
+            <input type="text" id="divisi" placeholder="Divisi" required>
+            <button type="submit">Simpan</button>
+            <button type="button" id="cancelEdit" style="display: none;" onclick="cancelEdit()">Batal</button>
+        </form>
+    </div>
+
+    <script>
+        // Ambil data karyawan dari Local Storage atau gunakan data awal jika Local Storage kosong
+        let karyawan = JSON.parse(localStorage.getItem("karyawanData")) || [
+            { "nama": "Andi", "usia": 30, "divisi": "IT" },
+            { "nama": "Budi", "usia": 25, "divisi": "HR" },
+            { "nama": "Cici", "usia": 28, "divisi": "IT" },
+            { "nama": "Dewi", "usia": 32, "divisi": "Marketing" },
+            { "nama": "Eka", "usia": 35, "divisi": "Finance" }
+        ];
+        
+        // Variabel untuk mode edit
+        let isEditing = false;
+        let editIndex = null;
+
+        // Fungsi untuk menyimpan data ke Local Storage
+        function saveToLocalStorage() {
+            localStorage.setItem("karyawanData", JSON.stringify(karyawan));
+        }
+
+        // Fungsi untuk menampilkan data karyawan dalam tabel
+        function tampilkanKaryawan(data) {
+            const karyawanTable = document.getElementById("karyawanTable");
+            karyawanTable.innerHTML = ""; // Kosongkan tabel sebelum menambahkan data
+
+            data.forEach((item, index) => {
+                const row = document.createElement("tr"); // Buat baris baru untuk setiap karyawan
+
+                // Tambahkan kolom Nama
+                const nameCell = document.createElement("td");
+                nameCell.textContent = item.nama;
+                row.appendChild(nameCell);
+
+                // Tambahkan kolom Usia
+                const ageCell = document.createElement("td");
+                ageCell.textContent = item.usia;
+                row.appendChild(ageCell);
+
+                // Tambahkan kolom Divisi
+                const divisiCell = document.createElement("td");
+                divisiCell.textContent = item.divisi;
+                row.appendChild(divisiCell);
+
+                // Tambahkan kolom Aksi (untuk Edit dan Hapus)
+                const actionCell = document.createElement("td");
+
+                // Tombol Edit
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+                editButton.onclick = () => startEdit(index);
+                actionCell.appendChild(editButton);
+
+                // Tombol Hapus
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Hapus";
+                deleteButton.onclick = () => deleteKaryawan(index);
+                actionCell.appendChild(deleteButton);
+
+                row.appendChild(actionCell); // Tambahkan kolom aksi ke baris
+                karyawanTable.appendChild(row); // Tambahkan baris ke tabel
+            });
+        }
+
+        // Fungsi untuk memulai mode edit data karyawan
+        function startEdit(index) {
+            const karyawanToEdit = karyawan[index];
+            document.getElementById("nama").value = karyawanToEdit.nama;
+            document.getElementById("usia").value = karyawanToEdit.usia;
+            document.getElementById("divisi").value = karyawanToEdit.divisi;
+            isEditing = true;
+            editIndex = index;
+            document.getElementById("formTitle").textContent = "Edit Karyawan";
+            document.getElementById("cancelEdit").style.display = "inline";
+        }
+
+        // Fungsi untuk membatalkan edit dan kembali ke mode tambah
+        function cancelEdit() {
+            isEditing = false;
+            editIndex = null;
+            document.getElementById("karyawanForm").reset();
+            document.getElementById("formTitle").textContent = "Tambah Karyawan";
+            document.getElementById("cancelEdit").style.display = "none";
+        }
+
+        // Fungsi untuk menghapus data karyawan
+        function deleteKaryawan(index) {
+            karyawan.splice(index, 1); // Hapus karyawan dari array
+            saveToLocalStorage(); // Simpan perubahan ke Local Storage
+            tampilkanKaryawan(karyawan); // Tampilkan kembali data yang diperbarui
+        }
+
+        // Fungsi untuk memfilter karyawan berdasarkan divisi
+        function filterByDivisi() {
+            const searchDivisi = document.getElementById("searchDivisi").value.toLowerCase();
+            const filteredData = karyawan.filter(item => item.divisi.toLowerCase().includes(searchDivisi));
+            tampilkanKaryawan(filteredData);
+        }
+
+        // Event listener untuk form submit
+        document.getElementById("karyawanForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Cegah submit default form
+            
+            // Ambil data dari input form
+            const nama = document.getElementById("nama").value;
+            const usia = parseInt(document.getElementById("usia").value);
+            const divisi = document.getElementById("divisi").value;
+
+            if (isEditing) {
+                // Jika dalam mode edit, perbarui data karyawan
+                karyawan[editIndex] = { nama, usia, divisi };
+                isEditing = false;
+                editIndex = null;
+                document.getElementById("formTitle").textContent = "Tambah Karyawan";
+                document.getElementById("cancelEdit").style.display = "none";
+            } else {
+                // Jika tidak dalam mode edit, tambahkan karyawan baru
+                karyawan.push({ nama, usia, divisi });
+            }
+
+            // Simpan perubahan ke Local Storage dan tampilkan data terbaru
+            saveToLocalStorage();
+            tampilkanKaryawan(karyawan);
+            document.getElementById("karyawanForm").reset(); // Reset form setelah submit
+        });
+
+        // Tampilkan data karyawan saat halaman dimuat
+        tampilkanKaryawan(karyawan);
+    </script>
+</body>
+</html>
